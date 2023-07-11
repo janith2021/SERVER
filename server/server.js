@@ -15,6 +15,9 @@ app.disable('x-powered-by'); //Less Hackers can get the Details of Our Stack
 const port = 5000; 
 
 app.use('/api',router)
+app.use('/',()=>{
+  console.log('Started')
+})
 
 connect().then(()=>{
     try {
