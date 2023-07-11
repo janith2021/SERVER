@@ -17,7 +17,7 @@ app.use('/api',router)
 app.use('/',()=>{
   console.log('Started')
 })
-c
+
 connect().then(()=>{
     try {
         app.listen(process.env.PORT, () => {
