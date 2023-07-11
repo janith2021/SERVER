@@ -49,4 +49,4 @@
 # # /android/app/release
 
 node_modules/
-.env/
+.env
