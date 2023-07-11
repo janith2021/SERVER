@@ -12,18 +12,17 @@ app.use(cors())
 app.use(morgan('tiny')); 
 app.disable('x-powered-by'); //Less Hackers can get the Details of Our Stack
 
-const port = 5000; 
 
 app.use('/api',router)
 app.use('/',()=>{
   console.log('Started')
 })
-
+c
 connect().then(()=>{
     try {
-        app.listen(port, () => {
+        app.listen(process.env.PORT, () => {
           console.log(
-            `Server Started and connected to http://localhost:${port}`
+            `Server Started and connected to http://localhost:${process.env.PORT}`
           );
         });
 
