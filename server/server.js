@@ -22,7 +22,7 @@ connect().then(()=>{
     try {
         app.listen(process.env.PORT, () => {
           console.log(
-            `Server Started and connected to http://localhost:5000`
+            `Server Started and connected to https://nodeapplication-8611eb651b54.herokuapp.com/`
           );
         });
 

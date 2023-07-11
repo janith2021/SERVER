@@ -67,9 +67,10 @@ const login = async (req, res) => {
     if (emailexistuser) {
       passwordverified = bcrypt.compareSync(password, emailexistuser.password);
       if (passwordverified) {
-        const token = jwt.sign({
-            email,
-        }, process.env.JWT_TOKEN,{expiresIn : "2h"});
+        // const token = jwt.sign({
+        //     email,
+        // }, process.env.JWT_TOKEN,{expiresIn : "2h"});
+        console.log(emailexistuser.role)
         res.json({message : 'You have Logged In Successfully' , type : 'success', role : emailexistuser.role})
       }else{
         res.json({type : 'error' , message : 'Invalid Password'})
