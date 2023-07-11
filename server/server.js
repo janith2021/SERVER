@@ -22,7 +22,7 @@ connect().then(()=>{
     try {
         app.listen(process.env.PORT, () => {
           console.log(
-            `Server Started and connected to http://localhost:${process.env.PORT}`
+            `Server Started and connected to http://localhost:5000`
           );
         });
 
