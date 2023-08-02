@@ -8,6 +8,8 @@ const { use } = require("../routes/route");
 const otp = require("../model/otp");
 const { mailgenerate, transport, smssender } = require("./mailer");
 const { hashpassword } = require("./hashPassword");
+const Map = require("../model/dengueaffected");
+const slides = require("../model/carousel");
 
 const register = async (req, res) => {
   try {
@@ -227,6 +229,59 @@ const resetpassword = async (req, res) => {
   }
 };
 
+const mapinsert = async(req,res) => {
+  const {_id,area,count} = req.body
+
+  const affectivity = new Map({
+    _id,
+    area,
+    count
+  })
+  const saved = await affectivity.save()
+  res.json({saved})
+}
+
+const mapdetails = async (req,res) => {
+  const affetivity = await Map.find()
+  console.log(affetivity); 
+  res.json(affetivity)
+
+}
+
+const setcarousel = async (req,res) => {
+  const {image,caption,status} = req.body
+  try {
+    const images = new slides({
+      image : image,
+      caption : caption,
+      status : status
+    })
+    const response = await images.save()
+    if(response){
+      res.json({ type: "Success", message: "Image Saved Successfully" }); 
+    }
+    
+  } catch (error) {
+    res.json(error)
+  }
+}
+
+
+const getcarousel = async (req,res) => {
+
+  try {
+    const images = await slides.find();
+    if(images){
+      res.json({type : "success" , image : images})
+    }
+  } catch (error) {
+    res.json(error);
+  }
+  
+
+
+}
+
 module.exports = {
   register,
   getUser,
@@ -235,5 +290,9 @@ module.exports = {
   createResetSession,
   login,
   resetpassword,
-  verifyotp
+  verifyotp,
+  mapdetails,
+  mapinsert,
+  getcarousel,
+  setcarousel,
 };
