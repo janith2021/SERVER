@@ -1,4 +1,4 @@
-const user = require("../model/user");
+const user = require("../model/users/user");
 const bcrypt = require("bcryptjs");
 // const argon2 = require('argon2');
 const jwt = require("jsonwebtoken");
@@ -88,10 +88,10 @@ const login = async (req, res) => {
 const getUser = async (req, res) => {
   const{email} = req.body
   console.log(email)
-  const existuser = await user.findOne({email});
+  const existuser = await user.findOne({email},"-password");
   if(existuser){
     console.log(existuser);
-    res.json({type : 'success' , user : existuser.role})
+    res.json({type : 'success' , user : existuser})
   }else{
     res.json({type : 'error' , message : 'No User Found'});
   }

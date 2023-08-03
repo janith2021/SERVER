@@ -14,16 +14,17 @@ const userschema = mongoose.Schema({
         type : String,
         required : true,
     },
-    mobile : {
-        type : String,
-        required : true,
-    },
     image : {
         type : String,
     },
     role : {
         type : String,
         default : 'user',
+    },
+    status : {
+        type : Number,
+        default : 0,
+        required : true
     }
 })
 
