@@ -26,6 +26,7 @@ const smssender = async (to,message) => {
 
   var user = process.env.SMSUSER
   var apikey = process.env.SMSAPIKEY 
+  console.log(to);
 
   var res = await Axios.post(`https://app.notify.lk/api/v1/send?user_id=${user}&api_key=${apikey}&sender_id=NotifyDEMO&to=${to}&message=${message}`)
   // var res = await Axios.post('https://webhook.site/06c6373a-2420-4fa2-a061-8effd34ba09b')

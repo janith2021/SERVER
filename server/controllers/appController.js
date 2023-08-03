@@ -10,6 +10,7 @@ const { mailgenerate, transport, smssender } = require("./mailer");
 const { hashpassword } = require("./hashPassword");
 const Map = require("../model/dengueaffected");
 const slides = require("../model/carousel");
+// const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
   try {
@@ -35,14 +36,14 @@ const register = async (req, res) => {
             greeting : 'Dear',
             signature : 'Yours Sincerely',
             intro : "You have Registered Successfully in our System",
-            outro : "You can contact us anytime"
+            outro : "You can contact us anytime",
           } 
         }
         var bodyemail = mailgenerate.generate(emailing)
         let message = {
           from : 'onlinesite1998@gmail.com',
           to : email,
-          subject : "Registration Successful",
+          subject : "Registration Successul",
           html : bodyemail
         }
         transport.sendMail(message).catch((err)=> console.log(err))
@@ -105,8 +106,9 @@ const generateOTP = async (req, res) => {
     try {
        const { email } = req.body;
        const existuser = await user.findOne({email})
-    //    console.log(existuser);
+       console.log(existuser);
        if(existuser){
+        const token = jwt.sign({ email : email}, process.env.JWTSECRET,{expiresIn : "15m"});
         var generateotp =  otpgenerate.generate(4, {
           digits: true,
           lowerCaseAlphabets: false,
@@ -121,9 +123,11 @@ const generateOTP = async (req, res) => {
         console.log(generateotps);
         const otps = await new OTP({
             otp : generateotps,
-            email : existuser.email
+            email : existuser.email,
+            token : token,
         })
         await otps.save();
+        console.log(existuser.mobile);
         const smsresponse = await smssender(
           existuser.mobile,
           "Dear " +
@@ -160,7 +164,7 @@ const generateOTP = async (req, res) => {
             html: bodyemail,
           };
           transport.sendMail(message).catch((err) => console.log(err));
-          res.json({type: 'success' , user : email, message : 'OTP SENT'})
+          res.json({type: 'success' , user : email, message : 'OTP SENT',token : token})
         }else{
           res.json({type : 'error', message : smsresponse.data});
         }  
@@ -175,25 +179,28 @@ const generateOTP = async (req, res) => {
 
 const verifyotp = async (req,res) => {
      const {email,otp} = req.body;
-     console.log(otp);
-     const uservalidation = await OTP.find({email})
-     console.log(email)
-     if(uservalidation.length > 0){
-        var uservalidations = await uservalidation[uservalidation.length - 1]
-         console.log(uservalidations.otp);
-        if(bcrypt.compareSync(otp,uservalidations.otp)){
-           console.log(uservalidations);
-            uservalidations.verified = true;
-            uservalidations.save(); 
-            console.log(uservalidation);
-            res.json({type : 'success' , message : 'OTP Verified'})
-        }else{
-          console.log('hi');
-          res.json({type : 'error' , message : 'Invalid OTP'})
-        }
-     }else{
-      console.log("hello");
-        res.json({type : 'error' , message : 'Invalid User'})
+     if(req.email === email){
+      const uservalidation = await OTP.find({email})
+      console.log(email)
+      if(uservalidation.length > 0){
+          var uservalidations = await uservalidation[uservalidation.length - 1]
+          console.log(uservalidations.otp);
+          if(bcrypt.compareSync(otp,uservalidations.otp)){
+            //  console.log(uservalidations);
+              uservalidations.verified = true;
+              uservalidations.save(); 
+              // console.log(uservalidation);
+              res.json({type : 'success' , message : 'OTP Verified'})
+          }else{
+            // console.log('hi');
+            res.json({type : 'error' , message : 'Invalid OTP'})
+          }
+      }else{
+        // console.log("hello");
+          res.json({type : 'error' , message : 'Invalid User'})
+      }
+     } else{
+      res.json({type : 'error' , message : 'Invalid User'})
      }
 
 }
@@ -205,6 +212,7 @@ const createResetSession = async (req, res) => {
 const resetpassword = async (req, res) => {
   try {
     const {email,password} = req.body;
+    if(email === req.email){
     let usercheck = await otp.find({email})
     console.log(usercheck)
     if(usercheck.length > 0){
@@ -224,6 +232,9 @@ const resetpassword = async (req, res) => {
     }else{
       res.json({type : 'error' , message : 'Session Expired. Please Try Again', redirect : 'true'})
     }
+  }else{
+      res.json({type : 'error' , message : 'Invalid User'})
+  }
   } catch (error) {
      res.json({type : 'error' , message: error})
   }

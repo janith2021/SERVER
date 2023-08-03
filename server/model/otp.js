@@ -10,14 +10,22 @@ const OTP = mongoose.Schema(
       type: String,
       required: true,
     },
+    token : {
+      type: String,
+      required : true,
+    },
     verified: {
       type: Boolean,
       default: false,
       required: true,
     },
-    createdAt: { type: Date, default: Date.now(), index: { expires: 1800 } },
+    createdAt: {
+      type : Date,
+      default : Date.now(),
+    }
+    // createdAt: { type: Date, default: Date.now(), index: { expires: 1800 } },
   },
-  { timestamps: true }
+  // { timestamps: true }
 );
 
 

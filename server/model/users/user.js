@@ -21,6 +21,10 @@ const userschema = mongoose.Schema({
         type : String,
         default : 'user',
     },
+    mobile : {
+        type : String,
+        required : true,
+    },
     status : {
         type : Number,
         default : 0,
