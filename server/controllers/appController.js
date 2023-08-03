@@ -179,9 +179,10 @@ const generateOTP = async (req, res) => {
 
 const verifyotp = async (req,res) => {
      const {email,otp} = req.body;
-     if(req.email === email){
+    // console.log(req.email.email)
+     if(req.email.email === email){
       const uservalidation = await OTP.find({email})
-      console.log(email)
+      // console.log(email)
       if(uservalidation.length > 0){
           var uservalidations = await uservalidation[uservalidation.length - 1]
           console.log(uservalidations.otp);
@@ -212,7 +213,7 @@ const createResetSession = async (req, res) => {
 const resetpassword = async (req, res) => {
   try {
     const {email,password} = req.body;
-    if(email === req.email){
+    if(email === req.email.email){
     let usercheck = await otp.find({email})
     console.log(usercheck)
     if(usercheck.length > 0){

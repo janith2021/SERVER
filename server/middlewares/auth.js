@@ -8,8 +8,9 @@ const authenticateuser = async(req,res,next) =>{
              jwttoken,
              process.env.JWTSECRET
            );
-
+            
            req.email = decodejwttoken;
+        //    console.log(req.email)
 
            next(); 
         } catch (error) {
