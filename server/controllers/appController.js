@@ -189,6 +189,10 @@ const verifyotp = async (req,res) => {
           if(bcrypt.compareSync(otp,uservalidations.otp)){
             //  console.log(uservalidations);
               uservalidations.verified = true;
+              // console.log(uservalidations.token);
+              // console.log(req.headers.authorization.split(" ")[1]);
+              // const token = req.headers.authorization.split(" ")[1];
+              // console.log(token === uservalidations.token)
               uservalidations.save(); 
               // console.log(uservalidation);
               res.json({type : 'success' , message : 'OTP Verified'})
@@ -226,6 +230,8 @@ const resetpassword = async (req, res) => {
         updateuser.password = hashedpassword;
         const response = await updateuser.save();
          console.log(response);
+        usercheck.verified = false;
+        usercheck.save();
         res.json({type : 'success' , message : 'Your Password Reset Successfully'})
       }else{
         res.json({type : 'error' , message : 'Unauthorized Access' , redirect : 'true'})
