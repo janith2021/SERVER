@@ -1,4 +1,4 @@
-const user = require("../model/users/user");
+const user = require("../model/user");
 const bcrypt = require("bcryptjs");
 // const argon2 = require('argon2');
 const jwt = require("jsonwebtoken");
@@ -10,26 +10,64 @@ const { mailgenerate, transport, smssender } = require("./mailer");
 const { hashpassword } = require("./hashPassword");
 const Map = require("../model/dengueaffected");
 const slides = require("../model/carousel");
+const organizations = require("../model/users/organization");
 // const jwt = require('jsonwebtoken');
+// const unique = require('generate-unique-id');
+const generateUniqueId = require("generate-unique-id");
+const { settime } = require("./timecontroller");
+const villager = require("../model/users/villager");
+const getroledeatils = require("./roleController");
+const axios = require('axios')
 
 const register = async (req, res) => {
   try {
-    const { name, email, password, mobile, image } = req.body;
+    // console.log('hello')
+    const { name, email, password, mobile, image , role} = req.body;
+    // console.log(req.body)
+    // console.log(req.body)
     const existuser = await user.findOne({ email });
     if (existuser) {
       res.json({ type: "error", message: "Email Already Exists" });
     } else {
       const salt = await bcrypt.genSalt(10);
       const newpassword = bcrypt.hashSync(password, salt);
-      const users = await new user({
+      var _id = await generateUniqueId({
+        useLetters : false,
+        useNumbers : true,
+        length : 4,
+      })
+      console.log('hello')
+      _id = role+"_"+_id;
+      console.log(_id)
+      console.log(_id)
+      const createdAt = await settime()
+      // console.log(createdAt)
+      // console.log(createduser)
+      // console.log(createdAt) 
+      const users = new user({
+        _id: _id,
+        password: newpassword,
+        role,
+        createdAt,
+        updatedAt: createdAt,
+      });
+      const villagers = new villager({
+        _id,
         name,
         email,
-        password: newpassword,
-        mobile,
         image,
+        mobile,
+        createdAt,
+        updatedAt : createdAt,
       });
+      // console.log;
       const createduser = await users.save();
-      if (createduser) {
+      const createdvillager = await villagers.save();
+      console.log(createduser);
+      console.log(createdvillager);
+      if (createduser && createdvillager) {
+        // console.log(createduser)
+        // console.log
         var emailing ={
           body : {
             name : name.toUpperCase(),
@@ -103,12 +141,17 @@ const updateUser = async (req, res) => {
 };
 
 const generateOTP = async (req, res) => {
+
     try {
        const { email } = req.body;
+       console.log(email)
        const existuser = await user.findOne({email})
        console.log(existuser);
        if(existuser){
+        console.log("User Exist");
         const token = jwt.sign({ email : email}, process.env.JWTSECRET,{expiresIn : "15m"});
+        console.log(token);
+        console.log(token)
         var generateotp =  otpgenerate.generate(4, {
           digits: true,
           lowerCaseAlphabets: false,
@@ -121,32 +164,39 @@ const generateOTP = async (req, res) => {
         // generateotp = await hashpassword(generateotp);
         var generateotps = bcrypt.hashSync(generateotp)
         console.log(generateotps);
+        const role = existuser.role;
+        console.log(role)
+        const userdetails = await getroledeatils(role,existuser.email);
+        console.log(userdetails);
         const otps = await new OTP({
             otp : generateotps,
             email : existuser.email,
             token : token,
         })
         await otps.save();
-        console.log(existuser.mobile);
-        const smsresponse = await smssender(
-          existuser.mobile,
-          "Dear " +
-            existuser.name.toUpperCase() +
-            ",\\n" +
-            "Your OTP for Reset Password Process is " +
-            "\\n" +
-            generateotp +
-            "\\n" +
-            "This OTP is Only Valid for 15 minutes." +
-            "\\n" +
-            "\\n" +
-            "Thank You." +
-            "\\n" +
-            "Fight The Bites Team"
+          
+        const smsresponse = await smssender(userdetails.mobile,
+        "Dear " +
+          userdetails.name.toUpperCase() +
+          ",\\n" +
+          "Your OTP for Reset Password Process is " +
+          "\\n" +
+          generateotp +
+          "\\n" +
+          "This OTP is Only Valid for 15 minutes." +
+          "\\n" +
+          "\\n" +
+          "Thank You." +
+          "\\n" +
+          "Fight The Bites Team"
+        
         );
+
+        // console.log(smsresponse)
         // await smssender()
         console.log(smsresponse.status)
         if(smsresponse.status == 200){
+          console.log("hello");
           var emailing = {
             body: {
               name: existuser.name.toUpperCase(),
@@ -166,9 +216,11 @@ const generateOTP = async (req, res) => {
           transport.sendMail(message).catch((err) => console.log(err));
           res.json({type: 'success' , user : email, message : 'OTP SENT',token : token})
         }else{
+          console.log('error');
           res.json({type : 'error', message : smsresponse.data});
         }  
        }else{
+        console.log("User ")
         res.json({type : 'error' , message : 'Invalid Email'});
        } 
        
