@@ -196,10 +196,10 @@ const generateOTP = async (req, res) => {
         // await smssender()
         console.log(smsresponse.status)
         if(smsresponse.status == 200){
-          console.log("hello");
+          // console.log("hello");
           var emailing = {
             body: {
-              name: existuser.name.toUpperCase(),
+              name: userdetails.name.toUpperCase(),
               greeting: "Dear",
               signature: "Yours Sincerely",
               intro: "Your Reset Passaword OTP is "+generateotp,
