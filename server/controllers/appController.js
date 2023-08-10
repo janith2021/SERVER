@@ -192,11 +192,13 @@ const generateOTP = async (req, res) => {
         
         );
 
-        // console.log(smsresponse)
-        // await smssender()
+        console.log(smsresponse)
+        await smssender()
         console.log(smsresponse.status)
-        if(smsresponse.status == 200){
-          // console.log("hello");
+        // var smsresponses.status = 200;
+        if(smsresponses.status == 200){
+          console.log("hello");
+          console.log(userdetails.name);
           var emailing = {
             body: {
               name: userdetails.name.toUpperCase(),
@@ -214,6 +216,7 @@ const generateOTP = async (req, res) => {
             html: bodyemail,
           };
           transport.sendMail(message).catch((err) => console.log(err));
+          console.log('hello')
           res.json({type: 'success' , user : email, message : 'OTP SENT',token : token})
         }else{
           console.log('error');

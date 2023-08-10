@@ -4,7 +4,7 @@ const authenticateuser = async(req,res,next) =>{
     if(req.headers.authorization){
         try {
            const jwttoken = req.headers.authorization.split(" ")[1];
-           const decodejwttoken = await jwt.verify(
+           const decodejwttoken = jwt.verify(
              jwttoken,
              process.env.JWTSECRET
            );

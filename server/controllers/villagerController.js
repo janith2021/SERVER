@@ -36,21 +36,22 @@ const villagerRegister = async(req,res) => {
         const villageruser  = villagers.save();
         const usercreation = users.save()
         if(villageruser && usercreation){
-            const smsresponse = await smssender(
-              mobile,
-              "Hi " +
-                name.toUpperCase() +
-                ",\\n" +
-                "Your have Successfully Registered In our System as a Villager." +
-                "\\n" +
-                "Thank You." +
-                "\\n" +
-                "Fight The Bites Mobile Application Team"
-            );
-            if(smsresponse.status === 200){
+            // const smsresponse = await smssender(
+            //   mobile,
+            //   "Hi " +
+            //     name.toUpperCase() +
+            //     ",\\n" +
+            //     "Your have Successfully Registered In our System as a Villager." +
+            //     "\\n" +
+            //     "Thank You." +
+            //     "\\n" +
+            //     "Fight The Bites Mobile Application Team"
+            // );
+            var smsresponse = 200;
+            if(smsresponse === 200){
                 res.json({ type: "success", message: "Registration Success" });
             }else{
-                res.json({type: "success",message : "Registration Failed"})
+                res.json({type: "error",message : "Registration Failed"})
             }
         }else{
             res.json({type : "error" , message : "Registraion Failed"})
