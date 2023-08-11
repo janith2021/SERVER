@@ -194,9 +194,9 @@ const generateOTP = async (req, res) => {
 
         // console.log(smsresponse)
         await smssender()
-        console.log(smsresponse.status.data.status)
+        console.log(smsresponse.data)
         // var smsresponses.status = 200;
-        if(smsresponse.status == 'success'){
+        if(smsresponse.data.status == 'success'){
           console.log("hello");
           console.log(userdetails.name);
           var emailing = {
