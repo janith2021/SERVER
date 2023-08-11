@@ -192,13 +192,14 @@ const generateOTP = async (req, res) => {
         
         );
 
-        // console.log(smsresponse)
-        await smssender()
-        console.log(smsresponse.data)
+        console.log(smsresponse.status)
+        // await smssender()
+        // console.log(smsresponse.data)
         // var smsresponses.status = 200;
-        if(smsresponse.data.status == 'success'){
-          console.log("hello");
-          console.log(userdetails.name);
+        //  var smsresponses = 200;
+        if(smsresponse.status == 200){
+          // console.log("hello");
+          // console.log(userdetails.name);
           var emailing = {
             body: {
               name: userdetails.name.toUpperCase(),
