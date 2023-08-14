@@ -65,9 +65,9 @@ const registerorganization = async(req,res) => {
 
 const createcampaign = async (req,res) => {
     const{name,date,location,report,sponsorshipamount,organizationid,campaigntime} = req.body
-
+    console.log(req.body)
     // try {
-        const time = await settime()
+        // const time = await settime()
         // console.log(time)
         // generateUniqueId({
 
@@ -93,14 +93,14 @@ const createcampaign = async (req,res) => {
           time : campaigntime,
           location: location,
           organizationid: organizationid,
-          createdAt: time,
-          updatedAt: time,
+          // createdAt: time,
+          // updatedAt: time,
           division: details.division
         });
 
         const campaign = await camp.save();
         if(campaign){
-            // console.log(campaign)
+            console.log(campaign)
             res.status(201).json({type : "success" , message : "Campaign Created Successfully!"})
         }else{
             res.status(404).json({type: "success", message : "There is an Error while creating the campaign.Please Try Again Later"})
@@ -117,8 +117,10 @@ const createcampaign = async (req,res) => {
 
 const getorganization = async(req,res) => {
   const {email} = req.body
+  console.log(email);
   const existuser = await organizations.findOne({email})
   if(existuser){
+    console.log(existuser)
     res.status(200).json({user : existuser})
   }else{
     res.status(404).json({type : "error" , message : "No User Found"})
@@ -130,6 +132,7 @@ const getAllCampaigns = async(req,res) => {
   const{division} = req.body
   const existcampaigns = await campaigns.find({division})
   if(existcampaigns){
+    console.log(existcampaigns);
     res.status(200).json({type : "success" , message : existcampaigns})
   }
   else{

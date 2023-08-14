@@ -34,6 +34,10 @@ const campaign = mongoose.Schema({
     },
     updatedAt : {
         type : String,
+    },
+    status : {
+        type : Number,
+        default : 0,
     }  
 
 })

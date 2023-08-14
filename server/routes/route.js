@@ -29,7 +29,7 @@ router.route('/resetpassword').post(authenticateuser,resetpassword)
 router.route("/organization/register").post(registerorganization)
 router.route("/organization/view").post(getorganization)
 router.route("/organization/campaign/create").post(createcampaign)
-router.route("/organization/getallcampaigns").get(getAllCampaigns)
+router.route("/organization/getallcampaigns").post(getAllCampaigns)
 
 //villager
 router.route("/villager/register").post(villagerRegister)
